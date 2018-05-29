@@ -1,0 +1,45 @@
+
+
+http://avilos.codes/system/linux/centos-swap/
+================================================================================
+SD 카드가 Booting 시 인식안됨...
+
+SD카드를 (뺏다가) 꽂음 
+sudo umount /media/ubuntu/*******
+sudo mount /dev/mmcblk1p1 /home/jblee/External
+
+swapon -s
+free -m
+
+sudo swapon /home/jblee/External/swapfile1
+
+swapon -s
+free -m
+
+================================================================================
+
+/home 아래에
+4기가 영역의 스왑영역을 추가
+
+user1@user1-X205TA:/home$ sudo fallocate -l 8G swapfile4G
+user1@user1-X205TA:/home$ sudo chmod 600 swapfile4G
+user1@user1-X205TA:/home$ sudo mkswap swapfile4G
+  Setting up swapspace version 1, size = 8 GiB (8589930496 bytes)
+  no label, UUID=99e8e7e3-91e1-428d-a1d2-b5b6d089fec5
+user1@user1-X205TA:/home$ sudo swapon /home/swapfile4G
+ 
+ 
+swapon -s
+free -m
+top
+
+스왑영역을 부팅시 매번 On 시켜줘야 하니 rc.local 파일에 “swapon /home/swapfile4G” 를 추가해서 설정을 완료하자.
+sudo vi /etc/rc.local
+
+swapon -s
+free -m
+top
+
+
+================================================================================
+================================================================================

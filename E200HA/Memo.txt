@@ -1,0 +1,286 @@
+
+
+===========================================================================================
+2018 05 17
+
+http://webterror.net/?p=1907#    참조하여
+
+UNetBootin 프로그램 다운로드 ( 윈도우버전 )
+    https://unetbootin.github.io/
+Ubuntu 16.04 다운로드
+    http://releases.ubuntu.com/16.04/
+LINK : https://github.com/hirotakaster/baytail-bootia32.efi  다운로드 
+
+UNetBootin 이용하여 Ubuntu 16.04 iso 이미지  8G USB 메모리에 Write 함
+
+bootia32.efi 파일을 다운로드 받아서 LiveUSB의 EFI/BOOT 디렉토리에 복사한다
+
+-----------------------------------------------------------------------------------------
+BIOS 화면 진입방법 : 컴퓨터가 켜지고 즉시 F2 연타
+ 부팅장치 선택화면 : 컴퓨터가 켜지고 즉시 ESC 연타 (아래에서 우분투 설치시에 ESC를 연타하자)
+
+1. fastboot Disabled 시킴
+2. Security 탭에 가서, Secure Boot menu -> Secure Boot Control 를 Disabled로 선택
+
+부팅순서 1.UEFI   2.Windows manager
+-----------------------------------------------------------------------------------------
+
+부팅화면(Grub 메뉴)에서 일단 Try Ubuntu 메뉴로 
+
+-----------------------------------------------------------------------------------------
+===========================================================================================
+
+sd card 부팅 가능하게 만들기  
+    http://geserkhan.blogspot.kr/2013/09/sdcard-booting.html#!/2013/09/sdcard-booting.html
+
+
+ (1) 윈도우키+R을 눌러 실행창에서 'diskpart'를 타이핑하여 실행시킨다.
+
+ (2) diskpart가 실행된 후, 'list disk'를 타이핑하고 실행하여 자신의 sd card 번호를 알아낸다.
+
+ (3) 'select disk <sdcard 번호>'를 타이핑하고 실행
+
+ (4) 다음의 내용을 차례로 타이핑하고 실행시킨다.
+
+clean
+create partition primary
+select partition 1
+active
+format fs=ntfs 혹은 format fs=fat32
+
+ (5) 카드의 포맷이 완료되면 'assign letter=알파벳'을 실행시켜 해당 카드의 드라이브 문자를 지정
+ 'exit'를 실행하여 diskpart를 종료시킨다.
+
+     이제는 sd card가 부팅 순간에 인식이 되며 
+Unetbootin 등을 이용하여 sd card를 [[ OS 설치용]] 으로 사용할 수 있다.
+
+
+===========================================================================================
+    http://comterman.tistory.com/761
+http://neosmart.net 접속
+EasyBCD 프로그램 다운로드 install 
+    
+===========================================================================================
+Ubuntu 설치
+
+부트로더 설치위치 
+    /dev/mmcblk1
+
+===========================================================================================
+
+There are no audio drivers for this laptop. Apparently someone developed a new kernel and that also is not perfect. Check this out:
+    https://github.com/Grippentech/Asus-E200HA-Linux-Post-Install-Script
+===========================================================================================
+우분투 서버 LTS(16.04.1) 에서 무선랜카드 잡기
+    https://linsoo.co.kr/archives/15553
+
+[Ubuntu] 우분투 무선랜 설정
+    http://perdupper.blogspot.kr/2016/02/ubuntu-sudo-apt-get-install-wireless.html
+
+[Ubuntu] 무선 네트워크 설정
+    http://clairdelunes.tistory.com/66
+
+리눅스에서 무선랜(WiFi) 사용방법 
+    http://lhjin.tistory.com/entry/%EB%A6%AC%EB%88%85%EC%8A%A4%EC%97%90%EC%84%9C-%EB%AC%B4%EC%84%A0%EB%9E%9CWiFi-%EC%82%AC%EC%9A%A9%EB%B0%A9%EB%B2%95
+
+-------------------------------------------------------------------------------------------
+iwconfig
+sudo ifconfig wlp1s0 up
+===========================================================================================
+리눅스 커널 컴파일 가이드
+    http://ydseo.tistory.com/27
+
+리눅스 커널 컴파일과 적용
+    http://guruseed.tistory.com/3
+
+[Linux] 리눅스 커널 컴파일하기
+    https://hychome.blogspot.kr/2015/09/blog-post_21.html
+
+Custom Kernel 컴파일링 & 설치하기  ( 설치후 구버전 지우기.. 등 )
+    http://bagjunggyu.blogspot.kr/2013/12/custom-kernel.html#!/2013/12/custom-kernel.html
+-------------------------------------------------------------------------------------------
+확인
+    uname -a
+    uname -r
+    4.13.0-43-generic
+
+필요한 라이브러리를 설치한다.
+    sudo apt-get install build-essential libncurses5 libncurses5-dev bin84 kernel-package
+    sudo apt-get install gcc
+
+
+여유 하드용량이 10G이상 있어야함... 
+
+/usr/src 에 --.tar 파일을 풀어놓음
+
+
+/usr/src/<Directory> 로 이동 
+
+만약, 여기서 이미 한 번 컴파일 작업을 했거나 하는 경우
+의존성 등을 삭제하기 위해서 본 커맨드를 입력한다.
+$ >> make mrproper
+$ >> make clean
+
+
+리눅스 소스 디렉터리에 configuration 파일을 .config  이름으로 복사한다.
+$ >> cp /boot/config-3.19.0-61-generic ./.config
+cp /boot/config-$(uname -r) .config
+또는
+cp /boot/config-`uname -r` .config
+
+
+
+configuration 설정
+$ >> make menuconfig
+1) Load > 엔터 => .config 되어있는 것 확인 > 엔터
+2) Exit
+
+
+커널 컴파일
+$ >> make -j2 
+( make all을 사용하는 경우도 있지만, 최근에 업그레이드 하는 경우 문제가 발생하는 것을 확인함)
+-j2은 스레드 2개를 사용하여 병렬처리로 속도를 올리는 방법이다.
+만약, -j 를 사용하는 경우 CPU가 못 받아줘서 멈춰버리는 경우가 발생하곤 하므로, 가능하면 숫자를 명시하도록 하자.
+
+-------------------------------------------------------------------------------------------
+리눅스 커널 버젼 3.13 이후로는 최초 빌드시에 아래와 같은 오류가 발생합니다. 
+scripts/sign-file.c:25:30: fatal error: openssl/opensslv.h: No such file or directory
+compilation terminated.
+이 문제는 openssl 관련된 라이브러리가 없어서 생기는 에러로서 그 이전에는 자체 커널 소스에 있는 API를 사용하다가 3.13 이후에는 외부의 libssl 라이브러리를 사용하게 됩니다. 
+이는 보안관련된 이슈가 생기면서 발생한 이슈라고 합니다. 특히 4.13 버젼이후로는 TLS도 지원한다고 하니 보다 보안이 강력한 kernel을 사용하고 싶다면 4.13버젼을 사용하는 것도 좋을 거 같습니다.
+ apt-get install libssl-dev 
+-------------------------------------------------------------------------------------------
+
+
+(make modules )
+
+커널이미지를 적용합니다
+$ >> make modules_install -j2
+$ >> make install -j2
+
+
+uname -r 로 현재 커널 버전을 확인
+
+
+/boot 디렉토리 안에 4개의 파일이 있나 확인 합니다.
+ex)
+System.map-4.13.0-rc3
+vmlinuz-4.13.0-rc3
+initrd.img-4.13.0-rc3
+config-4.13.0-rc3
+
+
+ 이렇게 커널 설치는 끝났습니다. 재부팅 하시면 됩니다.
+커널 컴파일을 위해서 /usr/src 에 만들어진 linux-3.12.6 폴더가 7GB 가까운 용량을 차지합니다.
+설치를 마치신후에 지우시길 바랍니다.
+sudo rm -rf /usr/src/linux-3.12.6
+
+8) 커널 제거하기
+우선 커널은 두개를 운영 하시는게 좋습니다.이전 버전을 백업 용도로 쓰는 겁니다.
+제거 하시려면 , 우선 다른 버전의 커널로 부팅 합니다.
+
+ 일반적으로 우분투 계열이나 데비안은 데비안 패키지로 설치하기 때문에 
+dpkg -l | grep linux-image 하면 설치된 커널이 나오며, sudo apt-get remove 를 통해서 지워집니다. 
+
+
+                    <========== Done but Fail 
+
+-------------------------------------------------------------------------------------------
+부트로더 설정
+
+설치된 커널버전으로 부팅될 수 있도록 설정할 필요가 있다.
+$ >> vi /boot/grub/grub.conf 로 들어가면, 몇번째에 설치되었는지 그 순서를 볼 수 있다.
+인덱스는 0부터 시작하며, 만약 2번째 메뉴의 3번째 submenu의 경우는 다음과 같이 지정한다. '1>2'
+
+부트로더 설정이 잘 안바뀌어서 여러가지 방법을 취해보았다.
+vi /etc/default/grub  에서 default값을 위와 같이 변경하였으나, 부팅이 잘 이루어지지 않았다.
+$ >> grub-reboot '1>2' 명령이 제일 잘 들었던 것으로 생각된다.
+-------------------------------------------------------------------------------------------
+
+
+reboot 해본 후, 
+uname -r 로 현재 커널 버전을 확인
+
+
+===========================================================================================
+
+libreoffice 삭제
+
+sudo apt-get remove --purge libreoffice*
+sudo apt-get clean
+sudo apt-get autoremove
+
+이렇게 명령어를 입력하면 대략 250MB 정도를 확보
+
+
+apt list --installed 
+===========================================================================================
+
+sound Kernel
+
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/refs/?h=topic/asus-e100h-4.13
+===========================================================================================
+
+https://wiki.debian.org/InstallingDebianOn/Asus/E200HA. 참조
+	Unfortunately Intel doesn't support Linux on Cherry Trail Atom SOCs, 
+	so this laptop has problems with audio 
+	(no sound with the integrated sound card, but works with an external one or via HDMI) 
+	and video (no suspension, but you can configure a "pseudo-suspension" 
+	that consumes little power, as explained below).
+
+    ==> USB Sound 카드 구매 결정 
+===========================================================================================
+Instructions to install Ubuntu based Linux distribution on ASUS E200HA
+	https://linuxfetishism.wordpress.com/2016/10/28/instructions-to-install-ubuntu-based-linux-distribution-on-asus-e200ha/
+
+
+Instructions to create Ubuntu 16.04 LTS install media for ASUS EeeBook X205TA
+	https://github.com/lopaka/instructions/blob/master/ubuntu-16.04-install-asus-x205ta.md#instructions-to-install-ubuntu-1604-lts-on-asus-eeebook-x205ta
+===========================================================================================
+
+
+우분투 크롬 키모음 잠금 풀기
+푸른깃발 2018.01.26 15:12  
+
+?크롬 키모음 잠금 풀기
+
+1.크롬을 실행시키면 귀찮게 비번을 넣으란다. 그 비번도 우분투 비번이 아니다. 내가 언제 설정했는지 모르는 비번이 들어있다. 그래서 없애는게 좋다.
+
+?mv ~/.local/share/keyrings ~/.local/share/keyrings.old
+
+?위와 같이 키링 폴더를 이동하는 방식으로 없애(?)버린다.
+
+2.로그아웃/로그인 또는 재부팅.
+3.다시 크롬을 실행시키면 비번을 설정하라고 그런다. 무시하고 그냥 계속을 계속 누른다.
+4.그러면 크롬 계정이 모두 로그아웃 되어 있다.
+5.귀찮지만 다시 모두 로그인하면 된다.
+6.더 이상 날 괴롭히지 못한다.
+
+===========================================================================================
+영문 한글 디렉토리 폴더
+xdg-user-dirs-gtk-update
+
+-------------------------------------------------------------------------------------------
+CAPSLOCK Ctrl
+
+(Default)
+gnome-tweak-tool
+
+(MATE 경우)
+    https://askubuntu.com/questions/33774/how-do-i-remap-the-caps-lock-and-ctrl-keys
+Here's a way to do it without installing extra software:
+
+setxkbmap -option ctrl:nocaps
+setxkbmap -layout us -option ctrl:nocaps
+( Source: ?http://www.noah.org/wiki/CapsLock_Remap_Howto )
+
+@nic You need to also change the file sudo vi /etc/default/keyboard and change XKBOPTIONS="ctrl:nocaps". Run Jorge's command after that but as setxkbmap -option ctrl:nocaps such that it does not change your default keyboard layout. ? Leo Leopold Hertz 준영 May 15 '16 at 16:28  
+
+
+===========================================================================================
+===========================================================================================
+===========================================================================================
+===========================================================================================
+===========================================================================================
+===========================================================================================
+===========================================================================================
